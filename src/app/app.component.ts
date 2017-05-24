@@ -1,32 +1,33 @@
 import { Component } from '@angular/core';
-// Import class so we can use it as dependency injection token in the constructor
-import {TodoDataService} from './todo-data.service';
-import {Todo} from './todo';
+import * as _ from "lodash";
+
+import { SpeechRecognitionService } from './speech-recognition.service';
+import { TodoDataService } from './todo-data.service';
+import { Todo } from './todo';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['../assets/app.component.css'],
-  /*
-    The AppComponent‘s dependency injector will now recognize the TodoDataService
-    class as a dependency injection token and return a single instance of
-    TodoDataService when we ask for it.
-   */
-  providers: [TodoDataService]
-  // Service is now available in AppComponent as this.todoDataService
+  styleUrls: ['../assets/css/app.component.css'],
+  providers: [
+    TodoDataService
+  ]
 })
 export class AppComponent {
-  // We first define a newTodo property and assign a new Todo() when the
-  //   component class is instantiated. This is the same Todo instance specified
-  //   in the two-way binding expression of [(ngModel)] in the view
+
   newTodo: Todo = new Todo();
-  // Ask Angular DI system to inject the dependency
-  // associated with the dependency injection token `TodoDataService`
-  // and assign it to a property called `todoDataService`
-  //
-  // "private todoDataService: TodoDataService" is short hand for
-  //   creating this.todoDataService
-  constructor(private todoDataService: TodoDataService) {
+  isListening: Boolean = true;
+  speechData: string;
+  speechHistory: any[] = [];
+  logicHistory: any[] = [];
+
+  constructor(
+    private todoDataService: TodoDataService,
+    private speechRecognitionService: SpeechRecognitionService
+  ) {
+    this.speechData = '';
+    // this.listen();
   }
 
   addTodo() {
@@ -44,5 +45,94 @@ export class AppComponent {
 
   get todos() {
     return this.todoDataService.getAllTodos();
+  }
+
+  markAllCompleted() {
+    return this.todoDataService.markAllCompleted();
+  }
+
+  markAllUncompleted() {
+    return this.todoDataService.markAllUncompleted();
+  }
+
+  clearAll() {
+    return this.todoDataService.clearAll();
+  }
+
+  ngOnDestroy() {
+    this.speechRecognitionService.DestroySpeechObject();
+  }
+
+  toggleListen() {
+    if (!!this.isListening) {
+      this.isListening = false;
+      this.speechRecognitionService.stop();
+    } else {
+      this.isListening = true;
+      this.listen();
+    }
+
+    console.log('toggleListen', this.isListening);
+  }
+
+  listen(): void {
+    console.log("this.isListening", this.isListening);
+
+    this.speechRecognitionService.record()
+      .subscribe(
+        // listener
+        (value) => {
+          if (_.isEmpty(value)) {
+            console.log('llllooodash');
+          }
+
+          value = value.trim().toLowerCase();
+
+          this.speechData = value;
+          var actionType = 'mic';
+          var actionTitle = 'Speach';
+
+          if (value.includes('mark all completed') || value.includes('mark all as completed')) {
+            this.markAllCompleted()
+            actionType = 'directions';
+            actionTitle = 'Direction';
+          } else if (value.includes('mark all incomplete') || value.includes('mark all uncomplete') || value.includes('mark all as uncomplete')) {
+            this.markAllUncompleted()
+            actionType = 'directions';
+            actionTitle = 'Direction';
+          } else if (value.includes('clear all') || value.includes('clean all')) {
+            this.clearAll()
+            actionType = 'directions';
+            actionTitle = 'Direction';
+          } else if (this.isListening) {
+            this.newTodo.title = value;
+            actionType = 'mic';
+          }
+
+          console.log('actionTitle', actionTitle);
+          console.log('actionType', actionType);
+
+          this.speechHistory.push({
+            text: value,
+            time: new Date(),
+            type: actionType,
+            title: actionTitle
+          });
+
+          this.isListening = false;
+        },
+        // error
+        (err) => {
+          console.log(err);
+          if (err.error == "no-speech") {
+            console.log("--restatring service--");
+            this.listen();
+          }
+        },
+        // completion
+        () => {
+          console.log("--complete--");
+        }
+      );
   }
 }

@@ -20,9 +20,18 @@
       "prefix": "app",
       "styles": [
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
-        "styles.css"
+        "../node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.css",
+        "../node_modules/bootstrap-material-design/dist/css/ripples.css",
+        "assets/css/styles.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/jquery/dist/jquery.js",
+        "../node_modules/bootstrap/dist/js/bootstrap.js",
+        "../node_modules/bootstrap-material-design/dist/js/material.js",
+        "../node_modules/bootstrap-material-design/dist/js/ripples.js",
+        "../node_modules/annyang/dist/annyang.js",
+        "assets/js/app.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

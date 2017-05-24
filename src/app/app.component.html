@@ -1,93 +1,200 @@
-<nav class="navbar navbar-inverse">
-    <div class="container">
-        <a class="navbar-brand">ToDo App <small class="text-lighter-2x">by Tyler Wall</small></a>
-        <ul class="nav navbar-nav" routerLinkActive="active">
-            <li class="nav-item"><a class="nav-link" routerLink="link">Metrics</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="link">Affiliates</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="link">Tools</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="link">Account</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="link">Reports</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="link">Support</a></li>
-        </ul>
+<div class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="javascript:void(0)">Todo App <small class="text-lighter-2x">by Tyler Wall</small></a>
     </div>
-</nav>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+      <ul class="nav navbar-nav">
+        <li><a>Metrics</a></li>
+        <li><a>Affiliates</a></li>
+        <li><a>Tools</a></li>
+        <li><a>Account</a></li>
+        <li><a>Reports</a></li>
+        <li><a>Support</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <div class="clearfix"></div>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="todolist not-done">
-             <h1>Todos</h1>
-                <input type="text" class="form-control add-todo" placeholder="Add todo">
-                    <button id="checkAll" class="btn btn-success">Mark all as done</button>
+  <div class="row">
+    <div class="col-md-6 col-xs-12">
 
-                    <hr>
-                    <ul id="sortable" class="list-unstyled">
-                    <li class="ui-state-default">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="" />Take out the trash</label>
-                        </div>
-                    </li>
-                    <li class="ui-state-default">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="" />Buy bread</label>
-                        </div>
-                    </li>
-                    <li class="ui-state-default">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="" />Teach penguins to fly</label>
-                        </div>
-                    </li>
-                </ul>
-                <div class="todo-footer">
-                    <strong><span class="count-todos"></span></strong> Items Left
+      <div class="panel panel-inverse">
+        <div class="panel-heading">
+          <h1 class="">
+            <strong>Todos</strong>
+
+            <a
+              id="listening-trigger"
+              (click)="toggleListen()"
+              [class.listening]="(!!isListening)"
+              class="btn text-white">
+              <i class="material-icons text-3x">{{(isListening) ? 'mic' : 'mic_none'}}</i>
+              <span class="pulsar"></span>
+            </a>
+          </h1>
+        </div>
+        <div class="panel-body ">
+          <div
+            id="search-container"
+            class="form-group label-floating is-focused"
+            [class.is-empty]="this.newTodo.title.length <= 0"
+            [class.is-focused]="is_addTask_focused || this.newTodo.title.length > 0">
+            <div class="input-group">
+              <span class="input-group-addon text-inverse"><i class="material-icons">playlist_add</i></span>
+              <label for="" class="control-label">What needs to be done?</label>
+              <input
+                class="form-control"
+                autofocus=""
+                [(ngModel)]="newTodo.title"
+                placeholder=""
+                (keyup.enter)="addTodo()"
+                (focus)="is_addTask_focused = true"
+                (blur)="is_addTask_focused = false">
+              <p class="help-block">Enter your new task and press ENTER</p>
+              <span class="input-group-btn">
+                <a
+                  (click)="addTodo()"
+                  [class.btn-success]="newTodo.title.length > 0"
+                  [class.disabled]="(newTodo.title.length == 0)"
+                  class="btn btn-raised">
+                  <i class="material-icons">add</i>
+                  Add
+                </a>
+              </span>
+            </div>
+          </div>
+
+          <hr *ngIf="todos.length > 0">
+
+          <ul id="task-list" class="list-group">
+            <li *ngFor="let todo of todos.reverse()" [class.completed]="todo.complete" class="list-group-item">
+              <div class="row">
+                <div class="col-xs-1 pt15 text-primary">
+                  <a>
+                    <i (click)="toggleTodoComplete(todo)" class="material-icons">{{ (!todo.complete) ? 'radio_button_unchecked' : 'radio_button_checked' }}</i>
+                  </a>
                 </div>
-            </div>
+                <div class="col-xs-9">
+                  <div class="form-group mt0">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [style.text-decoration]="(todo.complete) ? 'line-through' : 'none'"
+                      [(ngModel)]="todo.title"
+                      [disabled]="(todo.complete) ? true : null"
+                      data-id="{{todo.id}}">
+                  </div>
+                </div>
+                <div class="col-xs-2 pt10">
+                  <a
+                    [class.btn-raised]="(todo.complete)"
+                    [class.btn-danger]="(!!todo.complete)"
+                    class="remove-item btn btn-raised btn-xs m0 pull-right text-lighter-2x"
+                    (click)="removeTodo(todo)">
+                    <i class="material-icons">delete</i>
+                  </a>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
-        <div class="col-md-6">
-            <div class="todolist">
-             <h1>Already Done</h1>
-                <ul id="done-items" class="list-unstyled">
-                    <li>Some item <button class="remove-item btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-remove"></span></button></li>
+        <div class="panel-footer text-lighter-1x">
 
-                </ul>
+          <div class="pull-left pt10">
+            <div>
+              <span class="todo-count text-lighter-1x">
+                <strong>{{(todos | filterBy:{complete:false}).length}}</strong>
+                {{(todos | filterBy:{complete:false}).length == 1 ? 'item' : 'items'}} left
+              </span>
             </div>
+          </div>
+
+          <div class="btn-group pull-right m0">
+            <a (click)="markAllCompleted()" class="btn btn-default"><i class="material-icons">playlist_add_check</i> Mark All Completed</a>
+          </div>
+
+          <div class="clearfix"></div>
         </div>
-    </div>
-</div>
-
-
-<div class="container-fluid">
-  <div class="content">
-    <section class="todoapp">
-      <h1>AvantLink Todos</h1>
-      <input
-        class="form-control"
-        placeholder="What needs to be done?"
-        autofocus=""
-        [(ngModel)]="newTodo.title"
-        (keyup.enter)="addTodo()">
-
-      <section class="main" *ngIf="todos.length > 0">
-        <ul class="todo-list">
-          <li *ngFor="let todo of todos" [class.completed]="todo.complete">
-            <div class="view">
-              <input class="toggle" type="checkbox" (click)="toggleTodoComplete(todo)" [checked]="todo.complete">
-              <label>{{todo.title}}</label>
-              <button class="destroy" (click)="removeTodo(todo)"></button>
-            </div>
-          </li>
-        </ul>
-      </section>
-
-      <div *ngIf="todos.length > 0">
-        <span class="todo-count"><strong>{{todos.length}}</strong> {{todos.length == 1 ? 'item' : 'items'}} left</span>
       </div>
+    </div>
 
-    </section>
+    <div class="col-md-6 col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading"><h2>App Information</h2></div>
+        <div class="panel-body">
+          <div class="row">
+
+            <div *ngIf="logicHistory.length > 0" class="col-md-12">
+              <legend>
+                <h3>Logic</h3>
+              </legend>
+
+              <div class="list-group">
+                <div *ngFor="let item of logicHistory.reverse()">
+                  <div class="list-group-separator"></div>
+
+                  <div class="list-group-item">
+                    <div class="row-action-primary">
+                      <i class="material-icons">mic</i>
+                    </div>
+                    <div class="row-content">
+                      <div class="least-content">{{item.time | date:'mediumTime'}}</div>
+                      <h4 class="list-group-item-heading">Speach</h4>
+                      <p class="list-group-item-text">{{item.text}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="speechHistory.length > 0" class="col-md-12">
+              <legend>
+                <h3>Speech Feed</h3>
+              </legend>
+              <div class="list-group">
+
+                <div *ngFor="let item of speechHistory.reverse()">
+
+                  <div class="list-group-item">
+                    <div class="row-action-primary">
+                      <i class="material-icons">{{item.type}}</i>
+                    </div>
+                    <div class="row-content">
+                      <div class="least-content">{{item.time | date:'mediumTime'}}</div>
+                      <h4 class="list-group-item-heading">{{item.title}}</h4>
+                      <p class="list-group-item-text">{{item.text}}</p>
+                    </div>
+                  </div>
+                  <!--
+                  <div class="list-group-item">
+                    <div class="row-action-primary">
+                      <i class="material-icons">mic</i>
+                    </div>
+                    <div class="row-content">
+                      <div class="least-content">{{item.time | date:'mediumTime'}}</div>
+                      <h4 class="list-group-item-heading">Speach</h4>
+                      <p class="list-group-item-text">{{item.text}}</p>
+                    </div>
+                  </div> -->
+
+                  <div class="list-group-separator"></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

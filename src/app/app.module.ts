@@ -5,6 +5,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+import { WebStorageModule } from 'ngx-store';
+import { Ng2FilterPipeModule } from 'ng2-filter-pipe';
+
+import { SpeechRecognitionService } from './speech-recognition.service';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -12,9 +17,21 @@ import { HttpModule } from '@angular/http';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+
+    WebStorageModule.withConfig({
+      prefix: 'todo-app.',    // default: ngx_
+      clearType: 'prefix', // possible values: decorators, prefix, all
+      addSaveMethod: true  // defines whether .save() method shall be added to stored objects
+    }),
+    Ng2FilterPipeModule
   ],
-  providers: [],
+  providers: [
+    SpeechRecognitionService
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+  }
+}

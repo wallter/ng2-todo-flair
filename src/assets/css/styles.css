@@ -1,21 +1,4 @@
-@font-face {
-  font-family: 'Noto Sans';
-  src: local('Noto Sans'),
-       local('NotoSans')
-}
-
-/*@font-face {
-  font-family: 'Noto Sans';
-  src: url('../fonts/NotoSansCJKsc-Regular-3500.eot');
-  src: url('../fonts/NotoSansCJKsc-Regular-3500.eot?#iefix') format('embedded-opentype'),
-       url('../fonts/NotoSansCJKsc-Regular-3500.woff') format('woff'),
-       url('../fonts/NotoSansCJKsc-Regular-3500.ttf') format('truetype'),
-       url('../fonts/NotoSansCJKsc-Regular-3500.svg#noto_sans_Thin') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}*/
-
-@-webkit-viewport {
+/*@-webkit-viewport {
   width: device-width;
 }
 
@@ -43,13 +26,12 @@ html {
   position: relative;
   height: 100%;
   -webkit-font-smoothing: antialiased;
+  background-color: #fafafa;
+  font-size: 95%;
 }
 
 body {
-  font-size: 1.4em;
-  font-family: 'Noto Sans', arial, sans-serif;
   overflow-x: hidden;
-  padding-top: 60px;
   color: #212121;
   background-color: #FAFAFA;
 }
@@ -93,9 +75,15 @@ a:hover, a:focus, .blue-anchor:active, .blue-anchor:hover {
   color: rgb(0, 0, 136) !important;
 }
 
+.center {
+  float: none;
+  clear: both;
+  display: table;
+  margin: 0px auto;
+}
+
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: 300;
-  font-family: 'Noto Sans', arial, sans-serif !important;
 }
 
 h1.normal, h2.normal, h3.normal, h4.normal, h5.normal, h6.normal, .h1.normal, .h2.normal, .h3.normal, .h4.normal, .h5.normal, .h6.normal {
@@ -136,6 +124,9 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small
 .text-normal,
 .normal {
   font-weight: 300 !important;
+}
+.text-white {
+  color: white;
 }
 
 .text-thin {
